@@ -1,107 +1,24 @@
 "use client";
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { supabase } from "@/lib/supabaseClient";
 
 export default function RankPage() {
   const [games, setGames] = useState([]);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    // check monthly reset first, then load
-    checkMonthlyResetThenLoad();
-
-    // listen for storage events (other tabs) and custom events (same tab)
-    const onStorage = (e) => {
-      if (!e) return;
-      if (e.key === 'mahjong_games' || e.key === 'mahjong_games_updated_at' || e.key === 'mahjong_rank_last_reset') {
-        loadFromLocalStorage();
-      }
-    };
-    const onCustom = () => loadFromLocalStorage();
-    window.addEventListener('storage', onStorage);
-    window.addEventListener('mahjong_games_updated', onCustom);
-
-    return () => {
-      window.removeEventListener('storage', onStorage);
-      window.removeEventListener('mahjong_games_updated', onCustom);
-    };
+    loadFromSupabase();
   }, []);
 
-  // Monthly reset: if stored last reset month differs from current year-month, clear games
-  function checkMonthlyResetThenLoad() {
+  async function loadFromSupabase() {
     try {
-      const now = new Date();
-      const ym = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
-      const last = localStorage.getItem('mahjong_rank_last_reset');
-      if (last !== ym) {
-        // Archive existing games before resetting
-        try {
-          const raw = localStorage.getItem('mahjong_games');
-          const arr = raw ? JSON.parse(raw) : [];
-          if (Array.isArray(arr) && arr.length > 0) {
-            // archive year-month should refer to the period being archived (previous month)
-            const archiveYm = last || (() => {
-              const prev = new Date(now.getFullYear(), now.getMonth(), 0); // last day of previous month
-              return `${prev.getFullYear()}-${String(prev.getMonth()+1).padStart(2,'0')}`;
-            })();
-
-            const archiveKey = `mahjong_games_archive_${archiveYm}`;
-            // store archive in localStorage under archive key
-            localStorage.setItem(archiveKey, JSON.stringify(arr));
-
-            // trigger a download of the archive JSON so user has a file copy
-            try {
-              const blob = new Blob([JSON.stringify({ games: arr }, null, 2)], { type: 'application/json' });
-              const url = URL.createObjectURL(blob);
-              const a = document.createElement('a');
-              a.href = url;
-              a.download = `mahjong_games_archive_${archiveYm}.json`;
-              document.body.appendChild(a);
-              a.click();
-              a.remove();
-              URL.revokeObjectURL(url);
-            } catch (dlErr) {
-              console.warn('archive download failed', dlErr);
-            }
-          }
-        } catch (archErr) {
-          console.error('archive failed', archErr);
-        }
-
-        // reset mahjong_games and record the reset month
-        localStorage.setItem('mahjong_games', JSON.stringify([]));
-        localStorage.setItem('mahjong_rank_last_reset', ym);
-        // notify listeners
-        localStorage.setItem('mahjong_games_updated_at', String(Date.now()));
-        try { window.dispatchEvent(new CustomEvent('mahjong_games_updated')); } catch (e) { /* no-op */ }
-      }
-    } catch (e) {
-      console.error('monthly reset check failed', e);
-    }
-    loadFromLocalStorage();
-  }
-
-  function loadFromLocalStorage() {
-    try {
-      const raw = localStorage.getItem('mahjong_games');
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed)) {
-          setGames(parsed);
-          return;
-        }
-      }
-      // fallback to single entry
-      const single = localStorage.getItem('mahjong_game_entry');
-      if (single) {
-        const p = JSON.parse(single);
-        setGames([p]);
-        return;
-      }
-      setGames([]);
+      const { data, error } = await supabase.from('games').select('*').order('created_at', { ascending: true });
+      if (error) throw error;
+      setGames(data || []);
     } catch (e) {
       console.error(e);
-      setError('데이터 로드 중 오류가 발생했습니다. 파일을 가져와 보세요.');
+      setError('Supabase에서 데이터를 불러오는 중 오류가 발생했습니다.');
     }
   }
 
@@ -210,7 +127,7 @@ export default function RankPage() {
       <div style={{ margin: '14px 0', textAlign: 'center' }}>
         <input type="file" accept="application/json" onChange={handleFile} />
         <div style={{ marginTop: 8 }}>
-          <button onClick={loadFromLocalStorage} style={{ marginRight: 8 }}>로컬스토리지에서 재로드</button>
+          <button onClick={loadFromSupabase} style={{ marginRight: 8 }}>새로고침</button>
           <Link href="/mahjong"><button>입력 페이지로 이동</button></Link>
         </div>
         {error && <div style={{ color: '#b00020', marginTop: 8 }}>{error}</div>}

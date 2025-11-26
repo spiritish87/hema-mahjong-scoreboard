@@ -70,13 +70,18 @@ export default function MahjongScoreEntry() {
 
   const saveData = async () => {
     const entry = { game_name: gameName, players };
+    console.log('저장 요청:', entry);
     try {
-      const { error } = await supabase.from('games').insert([entry]);
-      if (error) throw error;
-      alert("게임이 저장되었습니다.");
+      const { data, error, status } = await supabase.from('games').insert([entry]);
+      console.log('Supabase 응답:', { data, error, status });
+      if (error) {
+        alert("저장 중 오류가 발생했습니다: " + error.message);
+        throw error;
+      }
+      alert("게임이 저장되었습니다. 응답: " + JSON.stringify(data));
     } catch (e) {
       console.error(e);
-      alert("저장 중 오류가 발생했습니다.");
+      alert("저장 중 오류가 발생했습니다. 콘솔을 확인하세요.");
     }
   };
 
