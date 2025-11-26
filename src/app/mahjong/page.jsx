@@ -138,7 +138,7 @@ export default function MahjongScoreEntry() {
   return (
     <div style={{ minHeight: '100vh', padding: '24px', background: '#1a2332', display: 'flex', justifyContent: 'center', alignItems: 'flex-start' }}>
       <div style={{ width: '100%', maxWidth: '800px', background: '#243447', border: '2px solid #d4af37', borderRadius: '16px', padding: '24px', boxShadow: '0 4px 20px rgba(212, 175, 55, 0.3)' }}>
-        <h1 style={{ fontSize: '28px', fontWeight: 'bold', marginBottom: '24px', textAlign: 'center', color: '#d4af37' }}>마X방 점수 기입</h1>
+        <h1 style={{ fontSize: '28px', fontWeight: 'bold', marginBottom: '24px', textAlign: 'center', color: '#d4af37', fontFamily: 'Gungsuh, GungsuhChe, 궁서체, serif' }}>마X방 점수 기입</h1>
 
         <button 
           onClick={() => setShowGuide(!showGuide)}
