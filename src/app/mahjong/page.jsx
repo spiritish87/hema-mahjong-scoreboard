@@ -109,26 +109,6 @@ export default function MahjongScoreEntry() {
         <CardContent>
           <h1 className="text-2xl font-semibold mb-4 text-center">작혼 리그전 점수 입력</h1>
 
-          <div className="mb-4">
-            <label className="text-sm">게임 이름</label>
-            <Input
-              value={gameName}
-              onChange={(e) => setGameName(e.target.value)}
-              placeholder="예: 1주차 3게임"
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4 mb-6">
-            <div>
-              <label className="text-sm">시작점</label>
-              <Input
-                value={startPoint}
-                onChange={(e) => setStartPoint(Number(e.target.value))}
-                type="number"
-              />
-            </div>
-          </div>
-
           <button 
             onClick={() => setShowGuide(!showGuide)}
             style={{ marginBottom: '12px', padding: '6px 12px', background: '#f0f0f0', border: '1px solid #ccc', borderRadius: '4px', cursor: 'pointer' }}
