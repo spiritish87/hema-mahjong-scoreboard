@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/lib/supabaseClient";
 
 // 최종 점수 계산 (4명 기준, 순위별 우마 적용)
 // U = (S - startPoint) / 1000 + 우마값
@@ -67,21 +68,11 @@ export default function MahjongScoreEntry() {
     setCalculatedScores(scores);
   };
 
-  const saveData = () => {
-    // entry for backward compatibility
-    const entry = { gameName, players, startPoint, savedAt: Date.now() };
+  const saveData = async () => {
+    const entry = { game_name: gameName, players };
     try {
-      localStorage.setItem("mahjong_game_entry", JSON.stringify(entry));
-
-      // append to mahjong_games array
-      const raw = localStorage.getItem("mahjong_games");
-      const arr = raw ? JSON.parse(raw) : [];
-      arr.push(entry);
-      localStorage.setItem("mahjong_games", JSON.stringify(arr));
-      // also write an update timestamp to help other tabs detect changes
-      localStorage.setItem('mahjong_games_updated_at', String(Date.now()));
-      // dispatch a custom event so the same-window /rank page can update immediately
-      try { window.dispatchEvent(new CustomEvent('mahjong_games_updated', { detail: entry })); } catch (e) { /* no-op */ }
+      const { error } = await supabase.from('games').insert([entry]);
+      if (error) throw error;
       alert("게임이 저장되었습니다.");
     } catch (e) {
       console.error(e);
