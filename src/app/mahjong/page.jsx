@@ -69,7 +69,11 @@ export default function MahjongScoreEntry() {
   };
 
   const saveData = async () => {
-    const entry = { game_name: gameName, players };
+    // 현재 월 자동 설정 (YYYY-MM 형식)
+    const now = new Date();
+    const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+    
+    const entry = { game_name: gameName, players, month: currentMonth };
     console.log('저장 요청:', entry);
     try {
       const { data, error, status } = await supabase.from('games').insert([entry]);
@@ -78,7 +82,10 @@ export default function MahjongScoreEntry() {
         alert("저장 중 오류가 발생했습니다: " + error.message);
         throw error;
       }
-      alert("게임이 저장되었습니다. 응답: " + JSON.stringify(data));
+      alert("게임이 저장되었습니다.");
+      // 입력 필드 초기화
+      setPlayers([{ name: "", score: "" }, { name: "", score: "" }, { name: "", score: "" }, { name: "", score: "" }]);
+      setCalculatedScores(null);
     } catch (e) {
       console.error(e);
       alert("저장 중 오류가 발생했습니다. 콘솔을 확인하세요.");
@@ -107,7 +114,7 @@ export default function MahjongScoreEntry() {
     <div className="min-h-screen p-6 bg-gray-100 flex justify-center items-start">
       <Card className="w-full max-w-2xl shadow-xl rounded-2xl p-4">
         <CardContent>
-          <h1 className="text-2xl font-semibold mb-4 text-center">작혼 리그전 점수 입력</h1>
+          <h1 className="text-2xl font-semibold mb-4 text-center">마X방 점수 기입</h1>
 
           <button 
             onClick={() => setShowGuide(!showGuide)}
@@ -159,14 +166,9 @@ export default function MahjongScoreEntry() {
             저장하기
           </Button>
 
-          <div style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
-            <Button onClick={exportAll} className="w-full text-sm p-2">
-              전체 내보내기 (JSON)
-            </Button>
-            <Link href="/rank">
-              <Button className="w-full text-sm p-2">등수 대시보드 보기</Button>
-            </Link>
-          </div>
+          <Link href="/rank" style={{ display: 'block', marginTop: '12px' }}>
+            <Button className="w-full text-sm p-2">등수 대시보드 보기</Button>
+          </Link>
         </CardContent>
       </Card>
     </div>

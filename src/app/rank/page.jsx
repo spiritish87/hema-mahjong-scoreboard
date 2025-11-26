@@ -6,16 +6,40 @@ import { supabase } from "@/lib/supabaseClient";
 export default function RankPage() {
   const [games, setGames] = useState([]);
   const [error, setError] = useState('');
+  const [selectedMonth, setSelectedMonth] = useState('');
+  const [availableMonths, setAvailableMonths] = useState([]);
 
   useEffect(() => {
-    loadFromSupabase();
+    // 현재 월을 기본값으로 설정
+    const now = new Date();
+    const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+    setSelectedMonth(currentMonth);
   }, []);
+
+  useEffect(() => {
+    if (selectedMonth) {
+      loadFromSupabase();
+    }
+  }, [selectedMonth]);
 
   async function loadFromSupabase() {
     try {
-      const { data, error } = await supabase.from('games').select('*').order('created_at', { ascending: true });
+      // 선택된 월의 게임만 불러오기
+      const { data, error } = await supabase
+        .from('games')
+        .select('*')
+        .eq('month', selectedMonth)
+        .order('created_at', { ascending: true });
       if (error) throw error;
       setGames(data || []);
+      
+      // 사용 가능한 월 목록 가져오기
+      const { data: allGames } = await supabase.from('games').select('month');
+      if (allGames) {
+        const months = [...new Set(allGames.map(g => g.month).filter(Boolean))];
+        months.sort().reverse(); // 최신 월부터
+        setAvailableMonths(months);
+      }
     } catch (e) {
       console.error(e);
       setError('Supabase에서 데이터를 불러오는 중 오류가 발생했습니다.');
@@ -131,10 +155,21 @@ export default function RankPage() {
 
   return (
     <main style={{ padding: 24 }}>
-      <h1 style={{ textAlign: 'center' }}>리그전 총합 등수표</h1>
+      <h1 style={{ textAlign: 'center' }}>마X방 마X왕 순위</h1>
+      <div style={{ textAlign: 'center', marginTop: 12 }}>
+        <label style={{ marginRight: 8, fontWeight: 'bold' }}>월 선택:</label>
+        <select 
+          value={selectedMonth} 
+          onChange={(e) => setSelectedMonth(e.target.value)}
+          style={{ padding: '6px 12px', borderRadius: '4px', border: '1px solid #ccc' }}
+        >
+          {availableMonths.map(month => (
+            <option key={month} value={month}>{month}</option>
+          ))}
+        </select>
+      </div>
       <p style={{ textAlign: 'center', marginTop: 8 }} className="small">총 게임 수: {games.length}</p>
       <div style={{ margin: '14px 0', textAlign: 'center' }}>
-        <input type="file" accept="application/json" onChange={handleFile} />
         <div style={{ marginTop: 8 }}>
           <button onClick={loadFromSupabase} style={{ marginRight: 8 }}>새로고침</button>
           <Link href="/mahjong"><button>입력 페이지로 이동</button></Link>
