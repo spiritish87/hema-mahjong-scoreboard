@@ -136,66 +136,67 @@ export default function MahjongScoreEntry() {
   };
 
   return (
-    <div className="min-h-screen p-6 bg-gray-100 flex justify-center items-start">
-      <Card className="w-full max-w-2xl shadow-xl rounded-2xl p-4">
-        <CardContent>
-          <h1 className="text-2xl font-semibold mb-4 text-center">마X방 점수 기입</h1>
+    <div style={{ minHeight: '100vh', padding: '24px', background: '#1a2332', display: 'flex', justifyContent: 'center', alignItems: 'flex-start' }}>
+      <div style={{ width: '100%', maxWidth: '800px', background: '#243447', border: '2px solid #d4af37', borderRadius: '16px', padding: '24px', boxShadow: '0 4px 20px rgba(212, 175, 55, 0.3)' }}>
+        <h1 style={{ fontSize: '28px', fontWeight: 'bold', marginBottom: '24px', textAlign: 'center', color: '#d4af37' }}>마X방 점수 기입</h1>
 
-          <button 
-            onClick={() => setShowGuide(!showGuide)}
-            style={{ marginBottom: '12px', padding: '6px 12px', background: '#f0f0f0', border: '1px solid #ccc', borderRadius: '4px', cursor: 'pointer' }}
-          >
-            {showGuide ? '계산 규칙 숨기기' : '계산 규칙 보기'}
-          </button>
+        <button 
+          onClick={() => setShowGuide(!showGuide)}
+          style={{ marginBottom: '12px', padding: '8px 16px', background: '#2d4159', border: '2px solid #d4af37', borderRadius: '6px', cursor: 'pointer', color: '#d4af37', fontWeight: 'bold' }}
+        >
+          {showGuide ? '계산 규칙 숨기기' : '계산 규칙 보기'}
+        </button>
           
-          {showGuide && (
-            <div style={{ background: '#f9f9f9', padding: '12px', borderRadius: '4px', marginBottom: '12px', fontSize: '12px', lineHeight: '1.6', border: '1px solid #e0e0e0' }}>
-              <strong>마작 점수 계산 규칙:</strong><br/>
-              1. 기본점 S: 최종점수<br/>
-              2. 기본 계산: (S - 시작점) / 1000<br/>
-              3. 우마 U: 1위 +15, 2위 +5, 3위 -5, 4위 -15<br/>
-              4. 최종점수: (S - 시작점) / 1000 + 우마<br/>
-              예: 31400점 1위 = (31400-25000)/1000+15 = 6.4+15 = 21.4
-            </div>
-          )}
-
-          <div className="grid grid-cols-1 gap-4">
-            {players.map((p, i) => (
-              <Card key={i} className="p-3 rounded-xl shadow-sm">
-                <div className="grid grid-cols-2 gap-3">
-                  <Input
-                    placeholder={`플레이어 ${i + 1} 이름`}
-                    value={p.name}
-                    onChange={(e) => updatePlayer(i, "name", e.target.value)}
-                  />
-                  <Input
-                    placeholder="점수"
-                    value={p.score}
-                    onChange={(e) => updatePlayer(i, "score", e.target.value)}
-                    type="number"
-                    step="100"
-                  />
-                </div>
-                {calculatedScores && calculatedScores[i] && (
-                  <div style={{ marginTop: '8px', fontSize: '12px', color: '#555', padding: '6px', background: '#f5f5f5', borderRadius: '4px' }}>
-                    <div>기본: {calculatedScores[i].baseScore.toFixed(1)}</div>
-                    <div>우마: {calculatedScores[i].umaPoint > 0 ? '+' : ''}{calculatedScores[i].umaPoint}</div>
-                    <div style={{ fontWeight: 'bold', color: calculatedScores[i].final >= 0 ? '#00aa00' : '#aa0000', marginTop: '4px' }}>점수: {calculatedScores[i].final.toFixed(1)}</div>
-                  </div>
-                )}
-              </Card>
-            ))}
+        {showGuide && (
+          <div style={{ background: '#1a2332', padding: '16px', borderRadius: '8px', marginBottom: '16px', fontSize: '13px', lineHeight: '1.8', border: '2px solid #d4af37', color: '#d4af37' }}>
+            <strong style={{ fontSize: '14px' }}>마작 점수 계산 규칙:</strong><br/>
+            최종표기: (대전결과 - 25000) / 1000 + 우마점수<br/>
+            우마: 1위 +15, 2위 +5, 3위 -5, 4위 -15<br/>
+            예: 31400점 1위 = (31400-25000)/1000+15 = 6.4+15 = 21.4
           </div>
+        )}        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          {players.map((p, i) => (
+            <div key={i} style={{ padding: '16px', borderRadius: '12px', background: '#1a2332', border: '2px solid #d4af37' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                <input
+                  placeholder={`플레이어 ${i + 1} 이름`}
+                  value={p.name}
+                  onChange={(e) => updatePlayer(i, "name", e.target.value)}
+                  style={{ padding: '10px', borderRadius: '6px', border: '2px solid #d4af37', background: '#2d4159', color: '#d4af37', fontSize: '14px' }}
+                />
+                <input
+                  placeholder="점수"
+                  value={p.score}
+                  onChange={(e) => updatePlayer(i, "score", e.target.value)}
+                  type="number"
+                  step="100"
+                  style={{ padding: '10px', borderRadius: '6px', border: '2px solid #d4af37', background: '#2d4159', color: '#d4af37', fontSize: '14px' }}
+                />
+              </div>
+              {calculatedScores && calculatedScores[i] && (
+                <div style={{ marginTop: '12px', fontSize: '13px', color: '#d4af37', padding: '10px', background: '#243447', borderRadius: '6px', border: '1px solid #d4af37' }}>
+                  <div>기본: {calculatedScores[i].baseScore.toFixed(1)}</div>
+                  <div>우마: {calculatedScores[i].umaPoint > 0 ? '+' : ''}{calculatedScores[i].umaPoint}</div>
+                  <div style={{ fontWeight: 'bold', color: calculatedScores[i].final >= 0 ? '#ffd700' : '#ff6b6b', marginTop: '6px', fontSize: '14px' }}>점수: {calculatedScores[i].final.toFixed(1)}</div>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
 
-          <Button onClick={saveData} className="w-full mt-6 text-lg p-6 rounded-2xl">
-            저장하기
-          </Button>
+        <button 
+          onClick={saveData} 
+          style={{ width: '100%', marginTop: '24px', padding: '16px', fontSize: '18px', fontWeight: 'bold', borderRadius: '12px', background: '#2d4159', border: '3px solid #d4af37', color: '#d4af37', cursor: 'pointer', boxShadow: '0 2px 10px rgba(212, 175, 55, 0.3)' }}
+        >
+          저장하기
+        </button>
 
-          <Link href="/rank" style={{ display: 'block', marginTop: '12px' }}>
-            <Button className="w-full text-sm p-2">등수 대시보드 보기</Button>
-          </Link>
-        </CardContent>
-      </Card>
+        <Link href="/rank" style={{ display: 'block', marginTop: '16px' }}>
+          <button style={{ width: '100%', padding: '12px', fontSize: '14px', fontWeight: 'bold', borderRadius: '8px', background: '#1a2332', border: '2px solid #d4af37', color: '#d4af37', cursor: 'pointer' }}>
+            등수 대시보드 보기
+          </button>
+        </Link>
+      </div>
     </div>
   );
 }

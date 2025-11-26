@@ -177,81 +177,81 @@ export default function RankPage() {
   const rows = aggregatePlayers(games);
 
   return (
-    <main style={{ padding: 24 }}>
-      <h1 style={{ textAlign: 'center' }}>마X방 마X왕 순위</h1>
+    <main style={{ padding: 24, minHeight: '100vh', background: '#1a2332' }}>
+      <h1 style={{ textAlign: 'center', color: '#d4af37', fontSize: '32px', fontWeight: 'bold', marginBottom: '16px' }}>마X방 마X왕 순위</h1>
       <div style={{ textAlign: 'center', marginTop: 12 }}>
-        <label style={{ marginRight: 8, fontWeight: 'bold' }}>월 선택:</label>
+        <label style={{ marginRight: 8, fontWeight: 'bold', color: '#d4af37' }}>월 선택:</label>
         <select 
           value={selectedMonth} 
           onChange={(e) => setSelectedMonth(e.target.value)}
-          style={{ padding: '6px 12px', borderRadius: '4px', border: '1px solid #ccc' }}
+          style={{ padding: '8px 16px', borderRadius: '6px', border: '2px solid #d4af37', background: '#2d4159', color: '#d4af37', fontSize: '14px', fontWeight: 'bold' }}
         >
           {availableMonths.map(month => (
             <option key={month} value={month}>{month}</option>
           ))}
         </select>
       </div>
-      <p style={{ textAlign: 'center', marginTop: 8 }} className="small">총 게임 수: {games.length}</p>
+      <p style={{ textAlign: 'center', marginTop: 8, color: '#d4af37' }} className="small">총 게임 수: {games.length}</p>
       <div style={{ margin: '14px 0', textAlign: 'center' }}>
         <div style={{ marginTop: 8 }}>
-          <button onClick={loadFromSupabase} style={{ marginRight: 8 }}>새로고침</button>
-          <Link href="/mahjong"><button>입력 페이지로 이동</button></Link>
+          <button onClick={loadFromSupabase} style={{ marginRight: 8, padding: '8px 16px', background: '#2d4159', border: '2px solid #d4af37', borderRadius: '6px', color: '#d4af37', fontWeight: 'bold', cursor: 'pointer' }}>새로고침</button>
+          <Link href="/mahjong"><button style={{ padding: '8px 16px', background: '#2d4159', border: '2px solid #d4af37', borderRadius: '6px', color: '#d4af37', fontWeight: 'bold', cursor: 'pointer' }}>입력 페이지로 이동</button></Link>
         </div>
-        {error && <div style={{ color: '#b00020', marginTop: 8 }}>{error}</div>}
+        {error && <div style={{ color: '#ff6b6b', marginTop: 8 }}>{error}</div>}
       </div>
 
-      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+      <table style={{ width: '100%', borderCollapse: 'collapse', background: '#243447', border: '2px solid #d4af37' }}>
         <thead>
-          <tr>
-            <th style={{ border: '1px solid #ddd', padding: 8 }}>순위</th>
-            <th style={{ border: '1px solid #ddd', padding: 8 }}>플레이어</th>
-            <th style={{ border: '1px solid #ddd', padding: 8 }}>총 점수</th>
-            <th style={{ border: '1px solid #ddd', padding: 8 }}>참여 게임 수</th>
-            <th style={{ border: '1px solid #ddd', padding: 8 }}>평균</th>
-            <th style={{ border: '1px solid #ddd', padding: 8 }}>1등률</th>
-            <th style={{ border: '1px solid #ddd', padding: 8 }}>2등률</th>
-            <th style={{ border: '1px solid #ddd', padding: 8 }}>3등률</th>
-            <th style={{ border: '1px solid #ddd', padding: 8 }}>4등률</th>
+          <tr style={{ background: '#2d4159' }}>
+            <th style={{ border: '1px solid #d4af37', padding: 12, color: '#d4af37', fontWeight: 'bold' }}>순위</th>
+            <th style={{ border: '1px solid #d4af37', padding: 12, color: '#d4af37', fontWeight: 'bold' }}>플레이어</th>
+            <th style={{ border: '1px solid #d4af37', padding: 12, color: '#d4af37', fontWeight: 'bold' }}>총 점수</th>
+            <th style={{ border: '1px solid #d4af37', padding: 12, color: '#d4af37', fontWeight: 'bold' }}>참여 게임 수</th>
+            <th style={{ border: '1px solid #d4af37', padding: 12, color: '#d4af37', fontWeight: 'bold' }}>평균</th>
+            <th style={{ border: '1px solid #d4af37', padding: 12, color: '#d4af37', fontWeight: 'bold' }}>1등률</th>
+            <th style={{ border: '1px solid #d4af37', padding: 12, color: '#d4af37', fontWeight: 'bold' }}>2등률</th>
+            <th style={{ border: '1px solid #d4af37', padding: 12, color: '#d4af37', fontWeight: 'bold' }}>3등률</th>
+            <th style={{ border: '1px solid #d4af37', padding: 12, color: '#d4af37', fontWeight: 'bold' }}>4등률</th>
           </tr>
         </thead>
         <tbody>
           {rows.length === 0 ? (
-            <tr><td colSpan={9} style={{ textAlign: 'center', padding: 12 }}>데이터 없음</td></tr>
+            <tr><td colSpan={9} style={{ textAlign: 'center', padding: 12, color: '#d4af37' }}>데이터 없음</td></tr>
           ) : rows.map(r => (
-            <tr key={r.name}>
-              <td style={{ border: '1px solid #ddd', padding: 8 }}>{r.rank}</td>
-              <td style={{ border: '1px solid #ddd', padding: 8 }}>{r.name}</td>
-              <td style={{ border: '1px solid #ddd', padding: 8 }}>{r.total.toFixed(1)}</td>
-              <td style={{ border: '1px solid #ddd', padding: 8 }}>{r.games}</td>
-              <td style={{ border: '1px solid #ddd', padding: 8 }}>{r.avg.toFixed(1)}</td>
-              <td style={{ border: '1px solid #ddd', padding: 8 }}>{r.rank1Rate}%</td>
-              <td style={{ border: '1px solid #ddd', padding: 8 }}>{r.rank2Rate}%</td>
-              <td style={{ border: '1px solid #ddd', padding: 8 }}>{r.rank3Rate}%</td>
-              <td style={{ border: '1px solid #ddd', padding: 8 }}>{r.rank4Rate}%</td>
+            <tr key={r.name} style={{ background: '#1a2332' }}>
+              <td style={{ border: '1px solid #d4af37', padding: 10, color: '#d4af37' }}>{r.rank}</td>
+              <td style={{ border: '1px solid #d4af37', padding: 10, color: '#d4af37', fontWeight: 'bold' }}>{r.name}</td>
+              <td style={{ border: '1px solid #d4af37', padding: 10, color: '#ffd700', fontWeight: 'bold' }}>{r.total.toFixed(1)}</td>
+              <td style={{ border: '1px solid #d4af37', padding: 10, color: '#d4af37' }}>{r.games}</td>
+              <td style={{ border: '1px solid #d4af37', padding: 10, color: '#d4af37' }}>{r.avg.toFixed(1)}</td>
+              <td style={{ border: '1px solid #d4af37', padding: 10, color: '#d4af37' }}>{r.rank1Rate}%</td>
+              <td style={{ border: '1px solid #d4af37', padding: 10, color: '#d4af37' }}>{r.rank2Rate}%</td>
+              <td style={{ border: '1px solid #d4af37', padding: 10, color: '#d4af37' }}>{r.rank3Rate}%</td>
+              <td style={{ border: '1px solid #d4af37', padding: 10, color: '#d4af37' }}>{r.rank4Rate}%</td>
             </tr>
           ))}
         </tbody>
       </table>
 
-      <h2 style={{ marginTop: 32, marginBottom: 16 }}>대국 목록</h2>
+      <h2 style={{ marginTop: 32, marginBottom: 16, color: '#d4af37', fontSize: '24px', fontWeight: 'bold' }}>대국 목록</h2>
       {games.length === 0 ? (
-        <p style={{ textAlign: 'center', color: '#999' }}>저장된 대국이 없습니다.</p>
+        <p style={{ textAlign: 'center', color: '#d4af37' }}>저장된 대국이 없습니다.</p>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {games.map((game, idx) => (
-            <div key={idx} style={{ border: '1px solid #ddd', padding: 12, borderRadius: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div key={idx} style={{ border: '2px solid #d4af37', padding: 16, borderRadius: 8, display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#243447' }}>
               <div>
-                <div style={{ fontWeight: 'bold', marginBottom: 4 }}>{game.game_name || `게임 ${idx + 1}`}</div>
-                <div style={{ fontSize: '12px', color: '#666' }}>
+                <div style={{ fontWeight: 'bold', marginBottom: 4, color: '#d4af37', fontSize: '16px' }}>{game.game_name || `게임 ${idx + 1}`}</div>
+                <div style={{ fontSize: '13px', color: '#d4af37' }}>
                   {game.players && game.players.map(p => `${p.name}: ${p.score}점`).join(' / ')}
                 </div>
-                <div style={{ fontSize: '11px', color: '#999', marginTop: 4 }}>
+                <div style={{ fontSize: '12px', color: '#c9a961', marginTop: 4 }}>
                   {new Date(game.created_at).toLocaleString()}
                 </div>
               </div>
               <button 
                 onClick={() => deleteGame(idx)}
-                style={{ padding: '6px 12px', background: '#ff5252', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer' }}
+                style={{ padding: '8px 16px', background: '#8b0000', color: '#ffd700', border: '2px solid #d4af37', borderRadius: 6, cursor: 'pointer', fontWeight: 'bold' }}
               >
                 삭제
               </button>

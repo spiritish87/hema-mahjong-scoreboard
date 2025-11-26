@@ -6,7 +6,7 @@ html, body, #__next {
 body {
   background-color: #f7fafc;
   margin: 0;
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  font-family: 'Gungsuh', 'GungsuhChe', '궁서체', serif;
 }
 
 /* Minimal utility classes used by the app (subset of Tailwind-like names) */
