@@ -108,13 +108,22 @@ export default function RankPage() {
     reader.readAsText(file);
   };
 
-  const deleteGame = (index) => {
-    if (window.confirm(`게임 "${games[index].gameName || `게임 ${index + 1}`}"을(를) 삭제하시겠습니까?`)) {
-      const newGames = games.filter((_, i) => i !== index);
-      setGames(newGames);
-      localStorage.setItem('mahjong_games', JSON.stringify(newGames));
-      localStorage.setItem('mahjong_games_updated_at', String(Date.now()));
-      try { window.dispatchEvent(new CustomEvent('mahjong_games_updated')); } catch (e) { /* no-op */ }
+  const deleteGame = async (index) => {
+    const gameToDelete = games[index];
+    if (window.confirm(`게임 "${gameToDelete.game_name || `게임 ${index + 1}`}"을(를) 삭제하시겠습니까?`)) {
+      try {
+        // Supabase에서 삭제
+        const { error } = await supabase.from('games').delete().eq('id', gameToDelete.id);
+        if (error) throw error;
+        
+        // 로컬 state 업데이트
+        const newGames = games.filter((_, i) => i !== index);
+        setGames(newGames);
+        alert('삭제되었습니다.');
+      } catch (e) {
+        console.error(e);
+        alert('삭제 중 오류가 발생했습니다: ' + e.message);
+      }
     }
   };
 
@@ -166,12 +175,12 @@ export default function RankPage() {
           {games.map((game, idx) => (
             <div key={idx} style={{ border: '1px solid #ddd', padding: 12, borderRadius: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
-                <div style={{ fontWeight: 'bold', marginBottom: 4 }}>{game.gameName || `게임 ${idx + 1}`}</div>
+                <div style={{ fontWeight: 'bold', marginBottom: 4 }}>{game.game_name || `게임 ${idx + 1}`}</div>
                 <div style={{ fontSize: '12px', color: '#666' }}>
                   {game.players && game.players.map(p => `${p.name}: ${p.score}점`).join(' / ')}
                 </div>
                 <div style={{ fontSize: '11px', color: '#999', marginTop: 4 }}>
-                  {new Date(game.savedAt).toLocaleString()}
+                  {new Date(game.created_at).toLocaleString()}
                 </div>
               </div>
               <button 
