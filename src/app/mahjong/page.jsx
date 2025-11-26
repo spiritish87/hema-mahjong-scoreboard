@@ -69,6 +69,31 @@ export default function MahjongScoreEntry() {
   };
 
   const saveData = async () => {
+    // 점수 유효성 검사
+    const validPlayers = players.filter(p => p.name && p.score);
+    if (validPlayers.length === 0) {
+      alert('최소 1명 이상의 플레이어 정보를 입력해주세요.');
+      return;
+    }
+
+    // 점수 순서 검증 (높은 점수가 더 높은 순위여야 함)
+    const sortedByScore = [...players]
+      .filter(p => p.score !== '' && p.score !== null && p.score !== undefined)
+      .map(p => ({ name: p.name, score: Number(p.score) }))
+      .sort((a, b) => b.score - a.score);
+
+    // 입력된 순서대로 점수 확인
+    const inputScores = players
+      .filter(p => p.score !== '' && p.score !== null && p.score !== undefined)
+      .map(p => Number(p.score));
+
+    for (let i = 0; i < inputScores.length - 1; i++) {
+      if (inputScores[i] < inputScores[i + 1]) {
+        alert('잘못된 값을 입력하셨습니다 (점수와 순위 확인)\n위쪽 플레이어의 점수가 더 높아야 합니다.');
+        return;
+      }
+    }
+
     // 현재 월 자동 설정 (YYYY-MM 형식)
     const now = new Date();
     const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;

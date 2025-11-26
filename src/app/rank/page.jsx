@@ -72,6 +72,7 @@ export default function RankPage() {
         const final = baseScore + umaPoint;
         return {
           ...p,
+          rank: rank + 1, // 1위=1, 2위=2, 3위=3, 4위=4
           baseScore: baseScore,
           umaPoint: umaPoint,
           final: final
@@ -79,18 +80,40 @@ export default function RankPage() {
       });
 
       finalScores.forEach(p => {
-        if (!players[p.name]) players[p.name] = { total: 0, games: 0 };
+        if (!players[p.name]) {
+          players[p.name] = { 
+            total: 0, 
+            games: 0,
+            rank1: 0,
+            rank2: 0,
+            rank3: 0,
+            rank4: 0
+          };
+        }
         players[p.name].total += p.final;
         players[p.name].games += 1;
+        
+        // 순위별 카운트
+        if (p.rank === 1) players[p.name].rank1 += 1;
+        else if (p.rank === 2) players[p.name].rank2 += 1;
+        else if (p.rank === 3) players[p.name].rank3 += 1;
+        else if (p.rank === 4) players[p.name].rank4 += 1;
       });
     });
 
-    const arr = Object.keys(players).map(name => ({
-      name,
-      total: players[name].total,
-      games: players[name].games,
-      avg: players[name].games ? players[name].total / players[name].games : 0
-    }));
+    const arr = Object.keys(players).map(name => {
+      const p = players[name];
+      return {
+        name,
+        total: p.total,
+        games: p.games,
+        avg: p.games ? p.total / p.games : 0,
+        rank1Rate: p.games ? (p.rank1 / p.games * 100).toFixed(1) : '0.0',
+        rank2Rate: p.games ? (p.rank2 / p.games * 100).toFixed(1) : '0.0',
+        rank3Rate: p.games ? (p.rank3 / p.games * 100).toFixed(1) : '0.0',
+        rank4Rate: p.games ? (p.rank4 / p.games * 100).toFixed(1) : '0.0',
+      };
+    });
     arr.sort((a, b) => b.total - a.total);
 
     let lastScore = null; let lastRank = 0; let count = 0;
@@ -185,18 +208,26 @@ export default function RankPage() {
             <th style={{ border: '1px solid #ddd', padding: 8 }}>총 점수</th>
             <th style={{ border: '1px solid #ddd', padding: 8 }}>참여 게임 수</th>
             <th style={{ border: '1px solid #ddd', padding: 8 }}>평균</th>
+            <th style={{ border: '1px solid #ddd', padding: 8 }}>1등률</th>
+            <th style={{ border: '1px solid #ddd', padding: 8 }}>2등률</th>
+            <th style={{ border: '1px solid #ddd', padding: 8 }}>3등률</th>
+            <th style={{ border: '1px solid #ddd', padding: 8 }}>4등률</th>
           </tr>
         </thead>
         <tbody>
           {rows.length === 0 ? (
-            <tr><td colSpan={5} style={{ textAlign: 'center', padding: 12 }}>데이터 없음</td></tr>
+            <tr><td colSpan={9} style={{ textAlign: 'center', padding: 12 }}>데이터 없음</td></tr>
           ) : rows.map(r => (
             <tr key={r.name}>
               <td style={{ border: '1px solid #ddd', padding: 8 }}>{r.rank}</td>
               <td style={{ border: '1px solid #ddd', padding: 8 }}>{r.name}</td>
-              <td style={{ border: '1px solid #ddd', padding: 8 }}>{r.total}</td>
+              <td style={{ border: '1px solid #ddd', padding: 8 }}>{r.total.toFixed(1)}</td>
               <td style={{ border: '1px solid #ddd', padding: 8 }}>{r.games}</td>
               <td style={{ border: '1px solid #ddd', padding: 8 }}>{r.avg.toFixed(1)}</td>
+              <td style={{ border: '1px solid #ddd', padding: 8 }}>{r.rank1Rate}%</td>
+              <td style={{ border: '1px solid #ddd', padding: 8 }}>{r.rank2Rate}%</td>
+              <td style={{ border: '1px solid #ddd', padding: 8 }}>{r.rank3Rate}%</td>
+              <td style={{ border: '1px solid #ddd', padding: 8 }}>{r.rank4Rate}%</td>
             </tr>
           ))}
         </tbody>
