@@ -141,6 +141,7 @@ export default function MahjongScoreEntry() {
                     value={p.score}
                     onChange={(e) => updatePlayer(i, "score", e.target.value)}
                     type="number"
+                    step="100"
                   />
                 </div>
                 {calculatedScores && calculatedScores[i] && (
