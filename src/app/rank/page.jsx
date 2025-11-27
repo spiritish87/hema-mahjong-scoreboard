@@ -178,7 +178,7 @@ export default function RankPage() {
 
   return (
     <main style={{ padding: '16px', minHeight: '100vh', background: '#1a2332' }}>
-      <h1 style={{ textAlign: 'center', color: '#d4af37', fontSize: 'clamp(22px, 6vw, 32px)', fontWeight: 'bold', marginBottom: '16px', fontFamily: 'Gungsuh, GungsuhChe, 궁서체, serif' }}>마X방 마X왕 순위</h1>
+      <h1 style={{ textAlign: 'center', color: '#d4af37', fontSize: 'clamp(22px, 6vw, 32px)', fontWeight: 'bold', marginBottom: '16px', fontFamily: '"Song Myung", Gungsuh, GungsuhChe, 궁서체, serif' }}>마X방 마X왕 순위</h1>
       <div style={{ textAlign: 'center', marginTop: 12, marginBottom: 12 }}>
         <label style={{ marginRight: 8, fontWeight: 'bold', color: '#d4af37', fontSize: '14px' }}>월 선택:</label>
         <select 
@@ -233,7 +233,7 @@ export default function RankPage() {
       </table>
       </div>
 
-      <h2 style={{ marginTop: 32, marginBottom: 16, color: '#d4af37', fontSize: 'clamp(18px, 4vw, 24px)', fontWeight: 'bold', fontFamily: 'Gungsuh, GungsuhChe, 궁서체, serif' }}>대국 목록</h2>
+      <h2 style={{ marginTop: 32, marginBottom: 16, color: '#d4af37', fontSize: 'clamp(18px, 4vw, 24px)', fontWeight: 'bold', fontFamily: '"Song Myung", Gungsuh, GungsuhChe, 궁서체, serif' }}>대국 목록</h2>
       {games.length === 0 ? (
         <p style={{ textAlign: 'center', color: '#d4af37' }}>저장된 대국이 없습니다.</p>
       ) : (
