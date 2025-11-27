@@ -156,13 +156,13 @@ export default function MahjongScoreEntry() {
           </div>
         )}        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           {players.map((p, i) => (
-            <div key={i} style={{ padding: '16px', borderRadius: '12px', background: '#1a2332', border: '2px solid #d4af37' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+            <div key={i} style={{ padding: '12px', borderRadius: '12px', background: '#1a2332', border: '2px solid #d4af37' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                 <input
                   placeholder={`플레이어 ${i + 1} 이름`}
                   value={p.name}
                   onChange={(e) => updatePlayer(i, "name", e.target.value)}
-                  style={{ padding: '10px', borderRadius: '6px', border: '2px solid #d4af37', background: '#2d4159', color: '#d4af37', fontSize: '14px' }}
+                  style={{ padding: '10px', borderRadius: '6px', border: '2px solid #d4af37', background: '#2d4159', color: '#d4af37', fontSize: '14px', width: '100%', boxSizing: 'border-box' }}
                   lang="ko"
                   autoComplete="off"
                 />
@@ -172,7 +172,7 @@ export default function MahjongScoreEntry() {
                   onChange={(e) => updatePlayer(i, "score", e.target.value)}
                   type="number"
                   step="100"
-                  style={{ padding: '10px', borderRadius: '6px', border: '2px solid #d4af37', background: '#2d4159', color: '#d4af37', fontSize: '14px' }}
+                  style={{ padding: '10px', borderRadius: '6px', border: '2px solid #d4af37', background: '#2d4159', color: '#d4af37', fontSize: '14px', width: '100%', boxSizing: 'border-box' }}
                 />
               </div>
               {calculatedScores && calculatedScores[i] && (
