@@ -177,30 +177,29 @@ export default function RankPage() {
   const rows = aggregatePlayers(games);
 
   return (
-    <main style={{ padding: 24, minHeight: '100vh', background: '#1a2332' }}>
-      <h1 style={{ textAlign: 'center', color: '#d4af37', fontSize: '32px', fontWeight: 'bold', marginBottom: '16px', fontFamily: 'Gungsuh, GungsuhChe, 궁서체, serif' }}>마X방 마X왕 순위</h1>
-      <div style={{ textAlign: 'center', marginTop: 12 }}>
-        <label style={{ marginRight: 8, fontWeight: 'bold', color: '#d4af37' }}>월 선택:</label>
+    <main style={{ padding: '16px', minHeight: '100vh', background: '#1a2332' }}>
+      <h1 style={{ textAlign: 'center', color: '#d4af37', fontSize: 'clamp(22px, 6vw, 32px)', fontWeight: 'bold', marginBottom: '16px', fontFamily: 'Gungsuh, GungsuhChe, 궁서체, serif' }}>마X방 마X왕 순위</h1>
+      <div style={{ textAlign: 'center', marginTop: 12, marginBottom: 12 }}>
+        <label style={{ marginRight: 8, fontWeight: 'bold', color: '#d4af37', fontSize: '14px' }}>월 선택:</label>
         <select 
           value={selectedMonth} 
           onChange={(e) => setSelectedMonth(e.target.value)}
-          style={{ padding: '8px 16px', borderRadius: '6px', border: '2px solid #d4af37', background: '#2d4159', color: '#d4af37', fontSize: '14px', fontWeight: 'bold' }}
+          style={{ padding: '8px 12px', borderRadius: '6px', border: '2px solid #d4af37', background: '#2d4159', color: '#d4af37', fontSize: '14px', fontWeight: 'bold' }}
         >
           {availableMonths.map(month => (
             <option key={month} value={month}>{month}</option>
           ))}
         </select>
       </div>
-      <p style={{ textAlign: 'center', marginTop: 8, color: '#d4af37' }} className="small">총 게임 수: {games.length}</p>
-      <div style={{ margin: '14px 0', textAlign: 'center' }}>
-        <div style={{ marginTop: 8 }}>
-          <button onClick={loadFromSupabase} style={{ marginRight: 8, padding: '8px 16px', background: '#2d4159', border: '2px solid #d4af37', borderRadius: '6px', color: '#d4af37', fontWeight: 'bold', cursor: 'pointer' }}>새로고침</button>
-          <Link href="/mahjong"><button style={{ padding: '8px 16px', background: '#2d4159', border: '2px solid #d4af37', borderRadius: '6px', color: '#d4af37', fontWeight: 'bold', cursor: 'pointer' }}>입력 페이지로 이동</button></Link>
-        </div>
-        {error && <div style={{ color: '#ff6b6b', marginTop: 8 }}>{error}</div>}
+      <p style={{ textAlign: 'center', marginTop: 8, color: '#d4af37', fontSize: '14px' }}>총 게임 수: {games.length}</p>
+      <div style={{ margin: '14px 0', textAlign: 'center', display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'center' }}>
+        <button onClick={loadFromSupabase} style={{ padding: '8px 16px', background: '#2d4159', border: '2px solid #d4af37', borderRadius: '6px', color: '#d4af37', fontWeight: 'bold', cursor: 'pointer' }}>새로고침</button>
+        <Link href="/mahjong"><button style={{ padding: '8px 16px', background: '#2d4159', border: '2px solid #d4af37', borderRadius: '6px', color: '#d4af37', fontWeight: 'bold', cursor: 'pointer' }}>입력 페이지로 이동</button></Link>
+        {error && <div style={{ color: '#ff6b6b', marginTop: 8, width: '100%' }}>{error}</div>}
       </div>
 
-      <table style={{ width: '100%', borderCollapse: 'collapse', background: '#243447', border: '2px solid #d4af37' }}>
+      <div style={{ overflowX: 'auto' }}>
+        <table style={{ width: '100%', minWidth: '600px', borderCollapse: 'collapse', background: '#243447', border: '2px solid #d4af37' }}>
         <thead>
           <tr style={{ background: '#2d4159' }}>
             <th style={{ border: '1px solid #d4af37', padding: 12, color: '#d4af37', fontWeight: 'bold' }}>순위</th>
@@ -232,26 +231,27 @@ export default function RankPage() {
           ))}
         </tbody>
       </table>
+      </div>
 
-      <h2 style={{ marginTop: 32, marginBottom: 16, color: '#d4af37', fontSize: '24px', fontWeight: 'bold', fontFamily: 'Gungsuh, GungsuhChe, 궁서체, serif' }}>대국 목록</h2>
+      <h2 style={{ marginTop: 32, marginBottom: 16, color: '#d4af37', fontSize: 'clamp(18px, 4vw, 24px)', fontWeight: 'bold', fontFamily: 'Gungsuh, GungsuhChe, 궁서체, serif' }}>대국 목록</h2>
       {games.length === 0 ? (
         <p style={{ textAlign: 'center', color: '#d4af37' }}>저장된 대국이 없습니다.</p>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {games.map((game, idx) => (
-            <div key={idx} style={{ border: '2px solid #d4af37', padding: 16, borderRadius: 8, display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#243447' }}>
+            <div key={idx} style={{ border: '2px solid #d4af37', padding: '12px', borderRadius: 8, display: 'flex', flexDirection: 'column', gap: '8px', background: '#243447' }}>
               <div>
-                <div style={{ fontWeight: 'bold', marginBottom: 4, color: '#d4af37', fontSize: '16px' }}>{game.game_name || `게임 ${idx + 1}`}</div>
-                <div style={{ fontSize: '13px', color: '#d4af37' }}>
+                <div style={{ fontWeight: 'bold', marginBottom: 4, color: '#d4af37', fontSize: '15px' }}>{game.game_name || `게임 ${idx + 1}`}</div>
+                <div style={{ fontSize: '12px', color: '#d4af37', wordBreak: 'break-word' }}>
                   {game.players && game.players.map(p => `${p.name}: ${p.score}점`).join(' / ')}
                 </div>
-                <div style={{ fontSize: '12px', color: '#c9a961', marginTop: 4 }}>
+                <div style={{ fontSize: '11px', color: '#c9a961', marginTop: 4 }}>
                   {new Date(game.created_at).toLocaleString()}
                 </div>
               </div>
               <button 
                 onClick={() => deleteGame(idx)}
-                style={{ padding: '8px 16px', background: '#8b0000', color: '#ffd700', border: '2px solid #d4af37', borderRadius: 6, cursor: 'pointer', fontWeight: 'bold' }}
+                style={{ padding: '8px 16px', background: '#8b0000', color: '#ffd700', border: '2px solid #d4af37', borderRadius: 6, cursor: 'pointer', fontWeight: 'bold', alignSelf: 'flex-end' }}
               >
                 삭제
               </button>
